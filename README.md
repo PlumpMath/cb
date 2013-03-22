@@ -2,7 +2,7 @@
 
 Taking another whack at rewriting my blog engine.  This time **even simpler**.
 
-This doesn't really work yet, just putting it up here to track my progress.  Everything is in `test/cb/core-test.clj`.
+This doesn't really work yet, just putting it up here to track my progress.  Everything is in `test/cb/core_test.clj`.
 
 Copyright © 2013 John Jacobsen
 
