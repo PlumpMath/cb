@@ -1,5 +1,9 @@
 (ns cb.core-test
-  (:import java.io.File)           
+  (:import [java.io
+            File
+            PushbackReader
+            StringReader
+            BufferedReader])
   (:use clojure.test
         midje.sweet
         cb.core
@@ -13,6 +17,7 @@
 
 
 (def testdir "/tmp/testdir_4_cb")
+
 
 (defn delete-file-recursively
   "Delete file f. If it's a directory, recursively delete all its
@@ -109,11 +114,6 @@ true. [stolen/modified from clojure-contrib]"
        (with-tmp-directory markup#
          ~@body))))
 
-(defmacro with-engine [args & body]
-  `(do
-     (engine ~args)
-     ~@body))
-
 (try
   
 (facts "about splitext"
@@ -179,8 +179,28 @@ true. [stolen/modified from clojure-contrib]"
             outfile (pathjoin sitedir "index.html")]
         (with-setup testdir
           (with-tmp-file testfile "hello"
-            (with-engine {:sitedir sitedir, :markupdir markupdir}
-              (path-exists outfile) => truthy)))))
+            (engine {:sitedir sitedir, :markupdir markupdir})
+            (path-exists outfile) => truthy))))
+
+(def ex1 "{:a :map
+           :with 3
+           :things nil}
+<HEAD>
+</HEAD>
+<BODY>Mmmmm..... bodies....</BODY>")
+
+(defn preprocess-html [s]
+  (let [rdr (PushbackReader. (StringReader. s))
+        edn (read rdr)
+        rest (apply str (interpose "\n" (rest (line-seq (BufferedReader. rdr)))))]
+    [edn rest]))
+
+(fact "strings can be broken into EDN and HTML portions"
+      (let [[edn html] (preprocess-html ex1)]
+        (class edn) => (class {})
+        (class html) => (class "")
+        (:a edn) => :map
+        html => (contains "/HEAD")))
 
 ;; NEXT: process all markdown files and make HTML files in target directory
 (catch Exception e (prn e)))
