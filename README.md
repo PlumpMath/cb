@@ -1,4 +1,4 @@
-# cb
+# cb -- Clojure blog take 3
 
 Taking another whack at rewriting my blog engine.  This time **even simpler**.
 
