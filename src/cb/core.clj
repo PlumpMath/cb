@@ -59,8 +59,9 @@
                        (interpose " ")
                        (apply str))
                    settings))
-  (future (engine settings)))  ;; Wrapped this in a future to keep
-;; from killing thread while debugging
+  ;; FIXME: why is a future needed here?
+  ;; Otherwise updates don't work...
+  (future (engine settings)))  
 
 
 
@@ -97,8 +98,8 @@
 (defn -main [& args]
   (let [[toplevel & more] args]
     (cond
-     (nil? toplevel)   (println "Please supply a directory name "
+     (nil? toplevel)   (println "Please supply a directory name"
                                 "for your site's toplevel")
-     (not (nil? more)) (println "Only one argument is required "
-                                "(directory name for your site's toplevel")
+     (not (nil? more)) (println "Only one argument is required"
+                                "(directory name for your site's toplevel)")
      :else (do-main toplevel))))
