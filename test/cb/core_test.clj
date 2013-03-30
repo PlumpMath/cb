@@ -77,6 +77,18 @@
            result => (contains "hello")))))))
 
 
+(fact
+ "interpolation of HTML content into template,
+  with default template string, works"
+ (let []
+   (with-setup testdir
+     (with-tmp-file indexmd "hello"
+       (engine {:sitedir sitedir
+                :markupdir markupdir})
+       (let [result (slurp indexhtml)]
+         result => (contains "hello"))))))
+
+
 (def ex1 "{:a :map
            :with 3
            :things nil}
